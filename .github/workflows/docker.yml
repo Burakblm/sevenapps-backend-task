@@ -46,6 +46,7 @@ jobs:
               cd sevenapps-backend-task
             fi
         
+            
             cp /home/$USER/credentials.json upload/app/services/credentials.json
             cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
 
