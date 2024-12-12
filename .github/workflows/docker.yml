@@ -37,9 +37,7 @@ jobs:
             ssh $USER@$HOST <<EOF
         
             cd /home/${USER}
-        
-            export GOOGLE_APPLICATION_CREDENTIALS="/home/$USER/credentials.json"
-        
+                
             if [ -d "sevenapps-backend-task" ]; then
               cd sevenapps-backend-task
               git pull origin main
