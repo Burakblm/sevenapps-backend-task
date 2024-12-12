@@ -33,20 +33,43 @@ jobs:
         env:
           HOST: ${{ secrets.GCP_VM_HOST }}
           USER: ${{ secrets.GCP_VM_USERNAME }}
+          KAFKA_SERVER: ${{ secrets.KAFKA_SERVER }}
+          KAFKA_PORT: ${{ secrets.KAFKA_PORT }}
+          KAFKA_TOPIC: ${{ secrets.KAFKA_TOPIC }}
+          POSTGRES_SERVER: ${{ secrets.POSTGRES_SERVER }}
+          POSTGRES_PORT: ${{ secrets.POSTGRES_PORT }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          GOOGLE_GENERATIVE_AI_API: ${{ secrets.GOOGLE_GENERATIVE_AI_API }}
         run: |
             ssh $USER@$HOST <<EOF
-        
             cd /home/${USER}
                 
             if [ -d "sevenapps-backend-task" ]; then
               cd sevenapps-backend-task
-              git fetch --all
-              git reset --hard origin/main  # Forces an update from the main branch
+              git pull origin main
             else
               git clone https://github.com/Burakblm/sevenapps-backend-task.git
               cd sevenapps-backend-task
             fi
-        
+
+            if [ -f ".env" ]; then
+              rm .env
+            fi
+
+            echo "KAFKA_SERVER=$KAFKA_SERVER" >> .env
+            echo "KAFKA_PORT=$KAFKA_PORT" >> .env
+            echo "KAFKA_TOPIC=$KAFKA_TOPIC" >> .env
+            echo "POSTGRES_SERVER=$POSTGRES_SERVER" >> .env
+            echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
+            echo "POSTGRES_USER=$POSTGRES_USER" >> .env
+            echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
+            echo "POSTGRES_DB=$POSTGRES_DB" >> .env
+            echo "BUCKET_NAME=$BUCKET_NAME" >> .env
+            echo "GOOGLE_GENERATIVE_AI_API=$GOOGLE_GENERATIVE_AI_API" >> .env
+
             cp /home/$USER/credentials.json upload/app/services/credentials.json
             cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
 
