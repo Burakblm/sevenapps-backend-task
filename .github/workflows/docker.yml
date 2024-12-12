@@ -42,6 +42,8 @@ jobs:
           cp /home/$USER/credentials.json upload/app/services/credentials.json
           cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
 
+          gcloud config set project burakbulama
+
           export BUCKET_NAME=$(gcloud secrets versions access latest --secret="bucket-name")
           export GOOGLE_GENERATIVE_AI_API=$(gcloud secrets versions access latest --secret="google-generative-ai-api")
           export KAFKA_PORT=$(gcloud secrets versions access latest --secret="kafka-port")
