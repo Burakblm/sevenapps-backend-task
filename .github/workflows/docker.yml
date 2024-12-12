@@ -40,13 +40,13 @@ jobs:
                 
             if [ -d "sevenapps-backend-task" ]; then
               cd sevenapps-backend-task
-              git pull origin main
+              git fetch --all
+              git reset --hard origin/main  # Forces an update from the main branch
             else
               git clone https://github.com/Burakblm/sevenapps-backend-task.git
               cd sevenapps-backend-task
             fi
         
-            
             cp /home/$USER/credentials.json upload/app/services/credentials.json
             cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
 
