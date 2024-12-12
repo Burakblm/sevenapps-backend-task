@@ -31,12 +31,12 @@ jobs:
 
           cd /home/${USER}
 
-          if [ -d "sevenapps-python-backend-task-project" ]; then
-            cd sevenapps-python-backend-task-project
+          if [ -d "sevenapps-backend-task" ]; then
+            cd sevenapps-backend-task
             git pull origin main
           else
-            git clone https://github.com/Burakblm/sevenapps-python-backend-task-project.git
-            cd sevenapps-python-backend-task-project
+            git clone https://github.com/Burakblm/sevenapps-backend-task.git
+            cd sevenapps-backend-task
           fi
 
           cp /home/burak/credentials.json upload/app/services/credentials.json
