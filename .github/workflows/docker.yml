@@ -22,6 +22,13 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.GCP_VM_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          export_default_credentials: true
+
       - name: SSH into GCP VM and deploy
         env:
           HOST: ${{ secrets.GCP_VM_HOST }}
@@ -31,7 +38,6 @@ jobs:
         
             cd /home/${USER}
         
-            # Servis hesabı kimlik bilgilerini ayarla
             export GOOGLE_APPLICATION_CREDENTIALS="/home/$USER/credentials.json"
         
             if [ -d "sevenapps-backend-task" ]; then
@@ -44,8 +50,6 @@ jobs:
         
             cp /home/$USER/credentials.json upload/app/services/credentials.json
             cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
-        
-            gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
         
             export BUCKET_NAME=$(gcloud secrets versions access latest --secret="bucket-name" --project="burakbulama")
             export GOOGLE_GENERATIVE_AI_API=$(gcloud secrets versions access latest --secret="google-generative-ai-api" --project="burakbulama")
@@ -62,4 +66,3 @@ jobs:
             sudo docker-compose -f docker-compose-prod.yml up --build -d
         
             EOF
-        
