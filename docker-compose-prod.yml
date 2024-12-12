@@ -5,16 +5,16 @@ services:
     build:
       context: ./chat
     environment:
-      - KAFKA_SERVER=kafka
-      - KAFKA_PORT=9092
-      - KAFKA_TOPIC=pdf_uploads
-      - POSTGRES_SERVER=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=burak
-      - POSTGRES_PASSWORD=Burak115
-      - POSTGRES_DB=sevenapps
-      - BUCKET_NAME=data_bucket-3fff189c
-      - GOOGLE_GENERATIVE_AI_API=
+      - KAFKA_SERVER=${KAFKA_SERVER}
+      - KAFKA_PORT=${KAFKA_PORT}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - POSTGRES_SERVER=${POSTGRES_SERVER}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - BUCKET_NAME=${BUCKET_NAME}
+      - GOOGLE_GENERATIVE_AI_API=${GOOGLE_GENERATIVE_AI_API}
     depends_on:
       postgres:
         condition: service_healthy
@@ -24,22 +24,22 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chat-service.rule=Host(`34.67.4.6`) && PathPrefix(`/v1/chat`)"
+      - "traefik.http.routers.chat-service.rule=Host(`34.170.157.210`) && PathPrefix(`/v1/chat`)"
       - "traefik.http.services.chat-service.loadbalancer.server.port=8001"
 
   upload-service:
     build:
       context: ./upload
     environment:
-      - KAFKA_SERVER=kafka
-      - KAFKA_PORT=9092
-      - KAFKA_TOPIC=pdf_uploads
-      - POSTGRES_SERVER=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=burak
-      - POSTGRES_PASSWORD=Burak115
-      - POSTGRES_DB=sevenapps
-      - BUCKET_NAME=data_bucket-3fff189c
+      - KAFKA_SERVER=${KAFKA_SERVER}
+      - KAFKA_PORT=${KAFKA_PORT}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - POSTGRES_SERVER=${POSTGRES_SERVER}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - BUCKET_NAME=${BUCKET_NAME}
 
     depends_on:
       postgres:
@@ -50,22 +50,22 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.upload-service.rule=Host(`34.67.4.6`) && PathPrefix(`/v1/pdf`)"
+      - "traefik.http.routers.upload-service.rule=Host(`34.170.157.210`) && PathPrefix(`/v1/pdf`)"
       - "traefik.http.services.upload-service.loadbalancer.server.port=8000"
 
   metadata-extraction-service:
     build:
       context: ./metadata-extraction
     environment:
-      - KAFKA_SERVER=kafka
-      - KAFKA_PORT=9092
-      - KAFKA_TOPIC=pdf_uploads
-      - POSTGRES_SERVER=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=burak
-      - POSTGRES_PASSWORD=Burak115
-      - POSTGRES_DB=sevenapps
-      - BUCKET_NAME=data_bucket-3fff189c
+      - KAFKA_SERVER=${KAFKA_SERVER}
+      - KAFKA_PORT=${KAFKA_PORT}
+      - KAFKA_TOPIC=${KAFKA_TOPIC}
+      - POSTGRES_SERVER=${POSTGRES_SERVER}
+      - POSTGRES_PORT=${POSTGRES_PORT}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - BUCKET_NAME=${BUCKET_NAME}
     depends_on:
       postgres:
         condition: service_healthy
