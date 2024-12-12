@@ -22,24 +22,6 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.GCP_VM_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Fetch secrets from Google Secret Manager
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: service-account-key.json
-        run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > service-account-key.json
-          gcloud auth activate-service-account --key-file=service-account-key.json
-
-          export BUCKET_NAME=$(gcloud secrets versions access latest --secret="bucket-name")
-          export GOOGLE_GENERATIVE_AI_API=$(gcloud secrets versions access latest --secret="google-generative-ai-api")
-          export KAFKA_PORT=$(gcloud secrets versions access latest --secret="kafka-port")
-          export KAFKA_SERVER=$(gcloud secrets versions access latest --secret="kafka-server")
-          export KAFKA_TOPIC=$(gcloud secrets versions access latest --secret="kafka-topic")
-          export POSTGRES_DB=$(gcloud secrets versions access latest --secret="postgres-db")
-          export POSTGRES_PASSWORD=$(gcloud secrets versions access latest --secret="postgres-password")
-          export POSTGRES_PORT=$(gcloud secrets versions access latest --secret="postgres-port")
-          export POSTGRES_SERVER=$(gcloud secrets versions access latest --secret="postgres-server")
-          export POSTGRES_USER=$(gcloud secrets versions access latest --secret="postgres-user")
-
       - name: SSH into GCP VM and deploy
         env:
           HOST: ${{ secrets.GCP_VM_HOST }}
@@ -60,16 +42,16 @@ jobs:
           cp /home/$USER/credentials.json upload/app/services/credentials.json
           cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
 
-          export BUCKET_NAME=${BUCKET_NAME}
-          export GOOGLE_GENERATIVE_AI_API=${GOOGLE_GENERATIVE_AI_API}
-          export KAFKA_PORT=${KAFKA_PORT}
-          export KAFKA_SERVER=${KAFKA_SERVER}
-          export KAFKA_TOPIC=${KAFKA_TOPIC}
-          export POSTGRES_DB=${POSTGRES_DB}
-          export POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-          export POSTGRES_PORT=${POSTGRES_PORT}
-          export POSTGRES_SERVER=${POSTGRES_SERVER}
-          export POSTGRES_USER=${POSTGRES_USER}
+          export BUCKET_NAME=$(gcloud secrets versions access latest --secret="bucket-name")
+          export GOOGLE_GENERATIVE_AI_API=$(gcloud secrets versions access latest --secret="google-generative-ai-api")
+          export KAFKA_PORT=$(gcloud secrets versions access latest --secret="kafka-port")
+          export KAFKA_SERVER=$(gcloud secrets versions access latest --secret="kafka-server")
+          export KAFKA_TOPIC=$(gcloud secrets versions access latest --secret="kafka-topic")
+          export POSTGRES_DB=$(gcloud secrets versions access latest --secret="postgres-db")
+          export POSTGRES_PASSWORD=$(gcloud secrets versions access latest --secret="postgres-password")
+          export POSTGRES_PORT=$(gcloud secrets versions access latest --secret="postgres-port")
+          export POSTGRES_SERVER=$(gcloud secrets versions access latest --secret="postgres-server")
+          export POSTGRES_USER=$(gcloud secrets versions access latest --secret="postgres-user")
 
           sudo docker-compose -f docker-compose-prod.yml down -v
           sudo docker-compose -f docker-compose-prod.yml up --build -d
