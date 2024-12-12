@@ -1,0 +1,20 @@
+[tool.black]
+line-length = 88
+include = '\.py$'
+target-version = ['py311']
+exclude = '''
+/(
+      __pycache__
+    | build
+    | dist
+    | venv/.*
+    | alembic/.*
+  )/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+virtual_env = "venv"

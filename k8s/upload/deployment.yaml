@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upload-service
+  labels:
+    app: upload
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: upload
+  template:
+    metadata:
+      labels:
+        app: upload
+    spec:
+      containers:
+      - name: upload-service
+        image: <your-upload-service-image>:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: KAFKA_SERVER
+          value: kafka
+        - name: KAFKA_PORT
+          value: "9092"
+        - name: KAFKA_TOPIC
+          value: pdf_uploads
+        - name: POSTGRES_SERVER
+          value: postgres
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_USER
+          value: burak
+        - name: POSTGRES_PASSWORD
+          value: Burak115
+        - name: POSTGRES_DB
+          value: sevenapps
+        - name: BUCKET_NAME
+          value: data_bucket-3fff189c

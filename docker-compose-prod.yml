@@ -1,0 +1,147 @@
+version: '3.8'
+
+services:
+  chat-service:
+    build:
+      context: ./chat
+    environment:
+      - KAFKA_SERVER=kafka
+      - KAFKA_PORT=9092
+      - KAFKA_TOPIC=pdf_uploads
+      - POSTGRES_SERVER=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=burak
+      - POSTGRES_PASSWORD=Burak115
+      - POSTGRES_DB=sevenapps
+      - BUCKET_NAME=data_bucket-3fff189c
+      - GOOGLE_GENERATIVE_AI_API=
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chat-service.rule=Host(`34.67.4.6`) && PathPrefix(`/v1/chat`)"
+      - "traefik.http.services.chat-service.loadbalancer.server.port=8001"
+
+  upload-service:
+    build:
+      context: ./upload
+    environment:
+      - KAFKA_SERVER=kafka
+      - KAFKA_PORT=9092
+      - KAFKA_TOPIC=pdf_uploads
+      - POSTGRES_SERVER=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=burak
+      - POSTGRES_PASSWORD=Burak115
+      - POSTGRES_DB=sevenapps
+      - BUCKET_NAME=data_bucket-3fff189c
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.upload-service.rule=Host(`34.67.4.6`) && PathPrefix(`/v1/pdf`)"
+      - "traefik.http.services.upload-service.loadbalancer.server.port=8000"
+
+  metadata-extraction-service:
+    build:
+      context: ./metadata-extraction
+    environment:
+      - KAFKA_SERVER=kafka
+      - KAFKA_PORT=9092
+      - KAFKA_TOPIC=pdf_uploads
+      - POSTGRES_SERVER=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=burak
+      - POSTGRES_PASSWORD=Burak115
+      - POSTGRES_DB=sevenapps
+      - BUCKET_NAME=data_bucket-3fff189c
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: burak
+      POSTGRES_PASSWORD: Burak115
+      POSTGRES_DB: sevenapps
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U burak -d sevenapps"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  kafka:
+    image: confluentinc/cp-kafka:7.2.2
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    ports:
+      - "9092:9092"
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    networks:
+      - app-network
+    restart: always
+    healthcheck:
+      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.2.2
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    ports:
+      - "2181:2181"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "nc", "-z", "zookeeper", "2181"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+
+  traefik:
+    image: traefik:v2.5
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
