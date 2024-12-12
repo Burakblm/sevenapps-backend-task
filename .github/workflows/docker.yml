@@ -24,9 +24,11 @@ jobs:
 
       - name: Fetch secrets from Google Secret Manager
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: service-account-key.json
         run: |
-          gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
+          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > service-account-key.json
+          gcloud auth activate-service-account --key-file=service-account-key.json
+
           export BUCKET_NAME=$(gcloud secrets versions access latest --secret="bucket-name")
           export GOOGLE_GENERATIVE_AI_API=$(gcloud secrets versions access latest --secret="google-generative-ai-api")
           export KAFKA_PORT=$(gcloud secrets versions access latest --secret="kafka-port")
