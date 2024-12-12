@@ -124,5 +124,3 @@ Projeyi aşağıdaki bağlantılar üzerinden deneyebilirsiniz:
 
 ---
 
-Proje ile ilgili herhangi bir sorunuz ya da geri bildiriminiz olursa lütfen bizimle iletişime geçin!
-
