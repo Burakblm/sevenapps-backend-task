@@ -50,18 +50,7 @@ jobs:
         
             cp /home/$USER/credentials.json upload/app/services/credentials.json
             cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
-        
-            export BUCKET_NAME=$(gcloud secrets versions access latest --secret="bucket-name" --project="burakbulama")
-            export GOOGLE_GENERATIVE_AI_API=$(gcloud secrets versions access latest --secret="google-generative-ai-api" --project="burakbulama")
-            export KAFKA_PORT=$(gcloud secrets versions access latest --secret="kafka-port" --project="burakbulama")
-            export KAFKA_SERVER=$(gcloud secrets versions access latest --secret="kafka-server" --project="burakbulama")
-            export KAFKA_TOPIC=$(gcloud secrets versions access latest --secret="kafka-topic" --project="burakbulama")
-            export POSTGRES_DB=$(gcloud secrets versions access latest --secret="postgres-db" --project="burakbulama")
-            export POSTGRES_PASSWORD=$(gcloud secrets versions access latest --secret="postgres-password" --project="burakbulama")
-            export POSTGRES_PORT=$(gcloud secrets versions access latest --secret="postgres-port" --project="burakbulama")
-            export POSTGRES_SERVER=$(gcloud secrets versions access latest --secret="postgres-server" --project="burakbulama")
-            export POSTGRES_USER=$(gcloud secrets versions access latest --secret="postgres-user" --project="burakbulama")
-        
+
             sudo docker-compose -f docker-compose-prod.yml down -v
             sudo docker-compose -f docker-compose-prod.yml up --build -d
         
