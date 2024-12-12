@@ -1,4 +1,4 @@
-name: Deploy to GCP VM
+name: Fetch and Print Secret
 
 on:
   push:
@@ -6,52 +6,18 @@ on:
       - main
 
 jobs:
-  deploy:
+  fetch-secret:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up SSH key
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+      # Google Cloud credentials'ı ayarlıyoruz
+      - name: Set up Google Cloud credentials
         run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.GCP_VM_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
-          export_default_credentials: true
-
-      - name: SSH into GCP VM and deploy
-        env:
-          HOST: ${{ secrets.GCP_VM_HOST }}
-          USER: ${{ secrets.GCP_VM_USERNAME }}
+          echo "${{ secrets.GOOGLE_CREDENTIALS }}" > "${HOME}/gcloud-key.json"
+          gcloud auth activate-service-account --key-file="${HOME}/gcloud-key.json"
+      
+      # Secret Manager'dan 'postgres-user' secret'ını alıyoruz
+      - name: Fetch postgres-user secret
         run: |
-            ssh $USER@$HOST <<EOF
-        
-            cd /home/${USER}
-        
-            export GOOGLE_APPLICATION_CREDENTIALS="/home/$USER/credentials.json"
-        
-            if [ -d "sevenapps-backend-task" ]; then
-              cd sevenapps-backend-task
-              git pull origin main
-            else
-              git clone https://github.com/Burakblm/sevenapps-backend-task.git
-              cd sevenapps-backend-task
-            fi
-        
-            cp /home/$USER/credentials.json upload/app/services/credentials.json
-            cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
-
-            sudo docker-compose -f docker-compose-prod.yml down -v
-            sudo docker-compose -f docker-compose-prod.yml up --build -d
-        
-            EOF
+          POSTGRES_USER=$(gcloud secrets versions access latest --secret="postgres-user")
+          echo "Postgres User: $POSTGRES_USER"
