@@ -24,7 +24,7 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.chat-service.rule=Host(`burakbulama.com`) && PathPrefix(`/v1/chat`)"
+      - "traefik.http.routers.chat-service.rule=Host(`34.170.157.210`) && PathPrefix(`/v1/chat`)"
       - "traefik.http.services.chat-service.loadbalancer.server.port=8001"
 
   upload-service:
@@ -50,7 +50,7 @@ services:
       - app-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.upload-service.rule=Host(`burakbulama.com`) && PathPrefix(`/v1/pdf`)"
+      - "traefik.http.routers.upload-service.rule=Host(`34.170.157.210`) && PathPrefix(`/v1/pdf`)"
       - "traefik.http.services.upload-service.loadbalancer.server.port=8000"
 
   metadata-extraction-service:
