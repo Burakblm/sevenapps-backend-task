@@ -117,10 +117,7 @@ jobs:
             echo "BUCKET_NAME=$BUCKET_NAME" >> .env
             echo "GOOGLE_GENERATIVE_AI_API=$GOOGLE_GENERATIVE_AI_API" >> .env
 
-            cp /home/$USER/credentials.json upload/app/services/credentials.json
-            cp /home/$USER/credentials.json metadata-extraction/app/services/credentials.json
-
             sudo docker-compose -f docker-compose-prod.yml down -v
-            sudo docker-compose -f docker-compose-prod.yml up --build -d
+            sudo docker-compose -f docker-compose-prod.yml up -d
         
             EOF
