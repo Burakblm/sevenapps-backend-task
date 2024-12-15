@@ -14,11 +14,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - BUCKET_NAME=${BUCKET_NAME}
       - GOOGLE_GENERATIVE_AI_API=${GOOGLE_GENERATIVE_AI_API}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
+
     networks:
       - app-network
     labels:
@@ -39,11 +35,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - BUCKET_NAME=${BUCKET_NAME}
 
-    depends_on:
-      postgres:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
     networks:
       - app-network
     labels:
@@ -52,7 +43,7 @@ services:
       - "traefik.http.services.upload-service.loadbalancer.server.port=8000"
 
   metadata-extraction-service:
-    image: burakblm/metadata-extraction-service
+    image: burakblm/metadata-extraction-service:latest
     environment:
       - KAFKA_SERVER=${KAFKA_SERVER}
       - KAFKA_PORT=${KAFKA_PORT}
@@ -63,67 +54,10 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
       - BUCKET_NAME=${BUCKET_NAME}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      kafka:
-        condition: service_healthy
+
     networks:
       - app-network
 
-  postgres:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: burak
-      POSTGRES_PASSWORD: Burak115
-      POSTGRES_DB: sevenapps
-    ports:
-      - "5432:5432"
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U burak -d sevenapps"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
-  kafka:
-    image: confluentinc/cp-kafka:7.2.2
-    environment:
-      KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-    ports:
-      - "9092:9092"
-    depends_on:
-      zookeeper:
-        condition: service_healthy
-    networks:
-      - app-network
-    restart: always
-    healthcheck:
-      test: ["CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
-
-  zookeeper:
-    image: confluentinc/cp-zookeeper:7.2.2
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-    ports:
-      - "2181:2181"
-    networks:
-      - app-network
-    healthcheck:
-      test: ["CMD", "nc", "-z", "zookeeper", "2181"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 10s
 
   traefik:
     image: traefik:v2.5
