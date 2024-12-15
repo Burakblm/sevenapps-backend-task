@@ -1,0 +1,23 @@
+name: Docker Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Google Cloud Credentials
+        run: |
+          echo "$GCP_SERVICE_ACCOUNT_KEY" > $GITHUB_WORKSPACE/credentials.json
+          cat $GITHUB_WORKSPACE/credentials.json
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+
