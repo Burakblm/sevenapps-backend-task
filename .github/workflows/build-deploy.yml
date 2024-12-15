@@ -25,9 +25,9 @@ jobs:
 
       - name: Create credentials.json for upload and metadata-extraction
         run: |
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > upload/app/services/credentials.json
-          echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > metadata-extraction/app/services/credentials.json
-
+          echo "$GCP_SERVICE_ACCOUNT_KEY" | base64 --decode > upload/app/services/credentials.json
+          echo "$GCP_SERVICE_ACCOUNT_KEY" | base64 --decode > metadata-extraction/app/services/credentials.json
+        
       - name: Build and push chat service Docker image
         uses: docker/build-push-action@v6
         with:
