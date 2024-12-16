@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: upload-service
+  namespace: sevenapps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: upload-service
+  template:
+    metadata:
+      labels:
+        app: upload-service
+    spec:
+      containers:
+        - name: upload-service
+          image: burakblm/upload-service:latest
+          envFrom:
+            - configMapRef:
+                name: upload-service-config
+          ports:
+            - containerPort: 8000

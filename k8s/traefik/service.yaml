@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik
+  namespace: sevenapps
+spec:
+  selector:
+    app: traefik
+  ports:
+    - name: web
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30000
+    - name: dashboard
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30001
+  type: LoadBalancer

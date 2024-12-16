@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  namespace: sevenapps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traefik
+  template:
+    metadata:
+      labels:
+        app: traefik
+    spec:
+      containers:
+        - name: traefik
+          image: traefik:v2.5
+          args:
+            - "--api.insecure=true"
+            - "--providers.kubernetescrd"
+            - "--entrypoints.web.address=0.0.0.0:80"
+            - "--entrypoints.websecure.address=0.0.0.0:443"
+          ports:
+            - containerPort: 80
+            - containerPort: 8080
+          volumeMounts:
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
