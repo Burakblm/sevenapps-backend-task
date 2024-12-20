@@ -45,7 +45,7 @@ Bu API, kullanıcıların PDF dokümanlarını yüklemesine olanak tanır. Dokü
 Bir PDF dokümanını yüklemek için aşağıdaki komutu kullanabilirsiniz:
 
 ```bash
-curl -X POST "http://34.170.157.210/v1/pdf/" -F "file=@/path/to/your/pdf/file.pdf"
+curl -X POST "http://localhost/v1/pdf/" -F "file=@/path/to/your/pdf/file.pdf"
 ```
 
 #### Örnek Yanıt
@@ -63,7 +63,7 @@ Bu API, yüklü PDF dokümanlarıyla ilgili sorular sormayı ve yanıt almayı s
 Bir PDF dokümanına ilişkin soru sormak için aşağıdaki komutu kullanabilirsiniz:
 
 ```bash
-curl -X POST "http://34.170.157.210/v1/chat/75c47c5330974d909b707674a5a87978" -H "Content-Type: application/json" -d '{"message": "Bu PDF ne ile ilgilidir?"}'
+curl -X POST "http://localhost/v1/chat/75c47c5330974d909b707674a5a87978" -H "Content-Type: application/json" -d '{"message": "Bu PDF ne ile ilgilidir?"}'
 ```
 
 #### Örnek Yanıt
@@ -119,8 +119,10 @@ Bu işlem sonrası aşağıdaki servisler çalışır durumda olacaktır:
 
 Projeyi aşağıdaki bağlantılar üzerinden deneyebilirsiniz:
 
-- **PDF Yükleme API'si**: [http://34.170.157.210/v1/pdf/](http://34.170.157.210/v1/pdf/)
-- **Chat API'si**: [http://34.170.157.210/v1/chat/{pdf_id}](http://34.170.157.210/v1/chat/{pdf_id})
+- **PDF Yükleme API'si**: [http://your_vm_ip_address/v1/pdf/](http://your_vm_ip_address/v1/pdf/)
+- **Chat API'si**: [http://your_vm_ip_address/v1/chat/{pdf_id}](http://your_vm_ip_address/v1/chat/{pdf_id})
+
+Not: Google Cloud Compute Engine üzerinde yayınlanmış olan proje şu anda durdurulmuş durumda. Kendi sunucunuzun IP adresi üzerinden erişim sağlayabilirsiniz.
 
 ---
 
