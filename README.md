@@ -123,6 +123,6 @@ Projeyi aşağıdaki bağlantılar üzerinden deneyebilirsiniz:
 - **Chat API'si**: [http://your_vm_ip_address/v1/chat/{pdf_id}](http://your_vm_ip_address/v1/chat/{pdf_id})
 
 Not: Google Cloud Compute Engine üzerinde yayınlanmış olan proje şu anda durdurulmuş durumda. Kendi sunucunuzun IP adresi üzerinden erişim sağlayabilirsiniz.
-
+.
 ---
 
